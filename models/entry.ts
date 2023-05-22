@@ -15,6 +15,8 @@ const entrySchema = new Schema({
     },
     default: "pending",
   },
+  completedBy: { type: Schema.Types.ObjectId, ref: "User" },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const EntryModel: Model<IEntry> = mongoose.models.Entry || mongoose.model("Entry", entrySchema);

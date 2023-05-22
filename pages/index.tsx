@@ -1,45 +1,106 @@
-import { Inter } from "next/font/google";
+import { useState } from "react";
+import Link from "next/link";
 
-import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import MenuOutLinedIcon from "@mui/icons-material/MenuOutlined";
+import sweetalert from 'sweetalert2';
+import axios from "axios";
 
-import { Layout } from "@/components/layouts";
-import { EntryList, NewEntry } from "@/components/ui";
+export default function Index() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const inter = Inter({ subsets: ["latin"] });
+  const login = async () => {
+    await axios
+      .post("http://localhost:3000/api/users/login", { user:email, password })
+      .then((res) => {
+        console.log(res.data);
+        localStorage.setItem("user", JSON.stringify(res.data.id));
+        next.router.push("/entries");
+      })
+      .catch(({ response }) => {
+        sweetalert.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.message,
+        });
+      });
+  }
 
-function HomePage() {
   return (
-    <Layout title="Home OpenJira">
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ height: 'calc(100vh - 100px)'}}>
-            <CardHeader title="Pendientes"/>
-            <CardContent>
-              <NewEntry />
-              <EntryList status="pending"/>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ height: 'calc(100vh - 100px)'}}>
-            <CardHeader title="En progreso"/>
-            <CardContent>
-              <EntryList status="in-progres"/>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Card sx={{ height: 'calc(100vh - 100px)'}}>
-            <CardHeader title="Completadas"/>
-            <CardContent>
-              <EntryList status="finished"/>
-            </CardContent>
-          </Card>
-        </Grid>
+    <>
+      <head>
+        <title>Login</title>
+      </head>
+      <AppBar position="sticky">
+        <Toolbar>
+          <Typography variant="h6">WorkTrack</Typography>
+        </Toolbar>
+      </AppBar>
 
-      </Grid>
-    </Layout>
+      <Container>
+        <Grid
+          container
+          spacing={2}
+          direction="column"
+          justifyContent={"center"}
+          style={{ minHeight: "100vh" }}
+        >
+          <Paper elevation={2} sx={{ padding: 5 }}>
+            <Grid container direction={"column"} spacing={2}>
+              <Grid item>
+                <TextField
+                  type="email"
+                  fullWidth
+                  label="Correo o Usuario"
+                  variant="standard"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  type="password"
+                  fullWidth
+                  label="Password"
+                  variant="standard"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                spacing={2}
+                paddingX={2}
+                paddingY={3}
+              >
+                <Grid item xs={9}>
+                  <Button variant="outlined" fullWidth onClick={login}>
+                    Ingresar
+                  </Button>
+                </Grid>
+                <Grid item xs={3}>
+                  <Link href="/registry">
+                    <Button variant="text" fullWidth>
+                      Registrarse
+                    </Button>
+                  </Link>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Container>
+    </>
   );
 }
-
-export default HomePage;

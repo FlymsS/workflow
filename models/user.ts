@@ -4,29 +4,38 @@ import mongoose, { Model, Schema } from "mongoose";
 export interface IUser extends User{
 }
 
-const userSchema = new Schema({
-  name: { type: String, required: true },
+export const userSchema = new Schema({
+  name: { type: String, required: true, unique:true },
   email: { type: String, required: true, unique:true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, required: true, default: false },
-  team: { type: String, required: true },
+  team: [{ type: Schema.Types.ObjectId, ref: "Team" }],
   entries: [{ type: Schema.Types.ObjectId, ref: "Entry" }],
 });
 
-/*
-const entrySchema = new Schema({
-  description: { type: String, required: true },
-  createAt: { type: Number },
-  status: {
-    type: String,
-    enum: {
-      values: ["pending", "in-progres", "finished"],
-      message: "{VALUE} no es un estado valido",
-    },
-    default: "pending",
-  },
-});
+const UserModel: Model<IUser> = mongoose.models.User || mongoose.model("User", userSchema);
 
-const EntryModel: Model<User> = mongoose.models.Entry || mongoose.model("Entry", entrySchema);
+export const verifyUnique = async (email: string, name: string) => {
+  return await UserModel.findOne({$or: [{email: email}, {name: name}]}).then((duplicate:IUser|null) => {
+    if(duplicate){
+      if(duplicate.email == email){
+        return 'El correo ya esta registrado';
+      }
+      return 'El nombre de usuario ya esta registrado';
+    }
+  })
+}
 
-export default EntryModel;*/
+export const verifyUser = async (user: string, password: string)=> {
+  return await UserModel.findOne({$or: [{email: user}, {name: user}]}).then((user:IUser|null) => {
+    if(user){
+      if(user.password == password){
+        return user;
+      }
+      return 'La contraseña es incorrecta';
+    }
+    return 'El usuario no existe';
+  })
+}
+
+export default UserModel;

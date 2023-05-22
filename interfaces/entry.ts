@@ -1,7 +1,9 @@
 export interface Entry {
   _id: string;
   description: string;
-  createAt: number;
+  createAt: string;
+  createdBy: string;
+  completedBy: string;
   status: EntryStatus;
 }
 

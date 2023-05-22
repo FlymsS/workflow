@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Error, Model } from 'mongoose';
 
 const mongooConnection = {
   isConnected: 0,
