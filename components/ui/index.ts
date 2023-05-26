@@ -3,3 +3,5 @@ export * from './EntryList';
 export * from './NavBar';
 export * from './NewEntry';
 export * from './SideBar';
+export * from './DialogTeam';
+export * from './DeleteMembers';

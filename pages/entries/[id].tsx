@@ -40,7 +40,7 @@ const EntryPage: FC<Props> = ({entry}) => {
   const [status, setStatus] = useState<EntryStatus>(entry.status);
   const [touched, setTouched] = useState(false);
 
-  const {updateEntry} = useContext(EntriesContext);
+  const {updateEntry, deleteEntry} = useContext(EntriesContext);
   const router = useRouter();
 
   const isNotValid = useMemo(
@@ -64,8 +64,13 @@ const EntryPage: FC<Props> = ({entry}) => {
       description: inputValue,
     }
     updateEntry(updatedEntry);
-    router.push("/");
+    router.push("/entries");
   };
+
+  const handleDelete = async () => {
+    await deleteEntry(entry._id);
+    router.push("/entries")
+  }
 
   return (
     <Layout title="...">
@@ -128,6 +133,7 @@ const EntryPage: FC<Props> = ({entry}) => {
           right: 30,
           backgroundColor: "red",
         }}
+        onClick={() => handleDelete()}
       >
         <DeleteOutLinedIcon />
       </IconButton>

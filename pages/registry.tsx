@@ -15,11 +15,13 @@ import sweetalert from "sweetalert2";
 
 import { User } from "../interfaces";
 import { error } from 'console';
+import  Router  from "next/router";
 
 const registry = () => {
   const [data, setData] = useState<User>({} as User);
   const [complete, setComplete] = useState<boolean>(true);
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const router = Router;
 
   const set = (
     { target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -42,7 +44,7 @@ const registry = () => {
         title: "¡Registro exitoso!",
         text: "Ahora puedes iniciar sesión",
       });
-      next.router.push("/");
+      router.push("/");
     })
     .catch(({response}) => {
       sweetalert.fire({

@@ -25,9 +25,8 @@ const postUser = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const newUser = new User({ name, email, password });
   
   try{
-    db.connect();
+    await db.connect();
     const a = await verifyUnique(email, name);
-    console.log(a);
     if(a){
       return res.status(400).send({message: a});
     }

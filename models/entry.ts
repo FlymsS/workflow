@@ -7,6 +7,8 @@ export interface IEntry extends Entry{
 const entrySchema = new Schema({
   description: { type: String, required: true },
   createAt: { type: Number },
+  completedBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
   status: {
     type: String,
     enum: {
@@ -15,8 +17,6 @@ const entrySchema = new Schema({
     },
     default: "pending",
   },
-  completedBy: { type: Schema.Types.ObjectId, ref: "User" },
-  createdBy: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 const EntryModel: Model<IEntry> = mongoose.models.Entry || mongoose.model("Entry", entrySchema);

@@ -9,18 +9,21 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { UIProvider } from "@/context/ui";
 import { EntriesProvider } from "@/context/entries";
 import { lightTheme, darkTheme } from "@/themes";
+import { TeamsProvider } from "@/context/proyects";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <SnackbarProvider maxSnack={3}>
-      <EntriesProvider>
-        <UIProvider>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </UIProvider>
-      </EntriesProvider>
+      <TeamsProvider>
+        <EntriesProvider>
+          <UIProvider>
+            <ThemeProvider theme={darkTheme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </UIProvider>
+        </EntriesProvider>
+      </TeamsProvider>
     </SnackbarProvider>
   );
 }

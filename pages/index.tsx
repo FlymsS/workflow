@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-
+import Router from "next/router";
 import {
   AppBar,
   Button,
@@ -14,18 +14,19 @@ import {
 import MenuOutLinedIcon from "@mui/icons-material/MenuOutlined";
 import sweetalert from 'sweetalert2';
 import axios from "axios";
+import Cookies from "js-cookie"
 
 export default function Index() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = Router;
 
   const login = async () => {
     await axios
       .post("http://localhost:3000/api/users/login", { user:email, password })
       .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("user", JSON.stringify(res.data.id));
-        next.router.push("/entries");
+        Cookies.set("idUser", res.data.id);
+        router.push("/entries");
       })
       .catch(({ response }) => {
         sweetalert.fire({

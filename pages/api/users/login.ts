@@ -5,7 +5,8 @@ import { verifyUser } from '@/models/user';
 
 type Data = 
   | { message: string }
-  | IUser
+  | IUser 
+  | { id: string }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   switch( req.method ) {
@@ -19,13 +20,14 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 const postLogin = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   const { user, password } = req.body;
   try{
-    db.connect();
+    await db.connect();
     const a = await verifyUser(user, password);
     if(typeof a == 'string'){
       return res.status(400).send({message: a});
     }
+    await db.disconnect();    
     return res.status(201).send({id: a._id});
-  }catch{
+  }catch(error){
     await db.disconnect();
     console.log(error);
 

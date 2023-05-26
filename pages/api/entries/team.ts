@@ -9,21 +9,21 @@ type Data =
   | IEntry
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const idUser = req.cookies.idUser;
+  const idTeam = req.cookies.idTeam;
   switch( req.method ) {
     case 'GET':
-      return  getEntries(res, idUser!);
+      return  getEntries(res, idTeam!);
     case 'POST':
-      return postEntry(req, res, idUser!);
+      return postEntry(req, res, idTeam!);
     default:
       return res.status(400).json({ message : 'EndPoint no existe' })
   }
 } 
 
 
-const getEntries = async (res: NextApiResponse<Data>, idUser: string) => {
+const getEntries = async (res: NextApiResponse<Data>, idTeam: string) => {
   await db.connect();
-  const entries = await Entry.find({createdBy:idUser}).sort({ createAt: 'ascending' });
+  const entries = await Entry.find({createdBy:idTeam}).sort({ createAt: 'ascending' });
   await db.disconnect();
   res.status(200).json(entries)
 }
@@ -44,6 +44,7 @@ const postEntry = async (req: NextApiRequest, res: NextApiResponse<Data>, idUser
   }catch{
     await db.disconnect();
     console.log(error);
+
     return res.status(500).json({message: 'Algo salio mal, revisar consola del servidor'});
   }
 }
